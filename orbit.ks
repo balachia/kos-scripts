@@ -90,7 +90,8 @@ set ship:control:pilotmainthrottle to 0.
 // make a circularization node once we've passed atmosphere
 wait until altitude > kerbin:atm:height.
 // difference in vis-visa
-set dv to (sqrt(kerbin:mu * ((2/(kerbin:radius + obt:apoapsis)) - (1/(kerbin:radius + tgtalt)))) - sqrt(kerbin:mu * ((2/(kerbin:radius + obt:apoapsis)) - (1/obt:semimajoraxis))))
+// set dv to (sqrt(kerbin:mu * ((2/(kerbin:radius + obt:apoapsis)) - (1/(kerbin:radius + tgtalt)))) - sqrt(kerbin:mu * ((2/(kerbin:radius + obt:apoapsis)) - (1/obt:semimajoraxis))))
+set dv to (visvisa(kerbin:radius + obt:apoapsis, kerbin:radius + tgtalt) - visvisa(kerbin:radius + obt:apoapsis, obt:semimajoraxis)).
 // set dv to (sqrt(kerbin:mu/(kerbin:radius + tgtalt)) - sqrt(kerbin:mu/obt:semimajoraxis)).
 set x to node(time:seconds + eta:apoapsis, 0, 0, dv).
 add x.
