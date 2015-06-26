@@ -1,5 +1,4 @@
 // based on http://ksp.baldev.de/kos/far2/far2.txt
-// take "Orbiter 2" to orbit
 clearscreen. 
 // constants.
 set e to 2.71828182846.
