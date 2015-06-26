@@ -1,14 +1,4 @@
 // much adapted from http://ksp.baldev.de/kos/far2/far2.txt
-// // to orbit, from tutorial
-// WHEN SHIP:ALTITUDE > 10000 THEN {
-//     PRINT "Starting turn.  Aiming to 45 degree pitch.".
-//     LOCK STEERING TO HEADING(90,45). // east, 45 degrees pitch.
-// }
-// WHEN SHIP:ALTITUDE > 40000 THEN {
-//     PRINT "Starting flat part.  Aiming to horizon.".
-//     LOCK STEERING TO HEADING(90,0). // east, horizontal.
-// }
-
 // parameters
 parameter tgtalt.       // target altitude
 
@@ -68,14 +58,15 @@ until apoapsis > (tgtalt + ATMBUFFER) {
         print "alt: " + ar at (0,25).
     }
     if ar > GT1 {
-        lock steering to up + R(0, theta, -180).
+        // lock steering to up + R(0, theta, -180).
+        lock steering to up + R(0, theta, 0).
     }
 
     // control speed
     // calculate target velocity
 //     set vl to vt*0.9.
 //     set vh to vt*1.1.
-//     set vsm to velocity:surface:mag.
+    set vsm to velocity:surface:mag.
 //     if vsm < vl { set th to 1. }
 //     if vsm > vl and vsm < vh { set th to (vh-vsm)/(vh-vl). }
 //     if vsm > vh { set th to 0. }
@@ -98,13 +89,15 @@ set ship:control:pilotmainthrottle to 0.
 
 // make a circularization node once we've passed atmosphere
 wait until altitude > kerbin:atm:height.
-set dv to (sqrt(kerbin:mu/tgtalt) - sqrt(kerbin:mu/obt:semimajoraxis)).
+// difference in vis-visa
+set dv to (sqrt(kerbin:mu * ((2/(kerbin:radius + obt:apoapsis)) - (1/(kerbin:radius + tgtalt)))) - sqrt(kerbin:mu * ((2/(kerbin:radius + obt:apoapsis)) - (1/obt:semimajoraxis))))
+// set dv to (sqrt(kerbin:mu/(kerbin:radius + tgtalt)) - sqrt(kerbin:mu/obt:semimajoraxis)).
 set x to node(time:seconds + eta:apoapsis, 0, 0, dv).
 add x.
 
 // iteratively fix the node
 // "how many iterations could this possibly take?"
-lock diff to x:orbit:semimajoraxis - tgtalt.
+lock diff to x:orbit:semimajoraxis - (kerbin:radius + tgtalt).
 until abs(diff) < 1 {
     set x:prograde to x:prograde + KD * diff.
     wait 0.01.
