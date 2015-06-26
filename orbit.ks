@@ -91,14 +91,15 @@ set ship:control:pilotmainthrottle to 0.
 wait until altitude > kerbin:atm:height.
 // difference in vis-visa
 // set dv to (sqrt(kerbin:mu * ((2/(kerbin:radius + obt:apoapsis)) - (1/(kerbin:radius + tgtalt)))) - sqrt(kerbin:mu * ((2/(kerbin:radius + obt:apoapsis)) - (1/obt:semimajoraxis))))
-set dv to (visvisa(kerbin:radius + obt:apoapsis, kerbin:radius + tgtalt) - visvisa(kerbin:radius + obt:apoapsis, obt:semimajoraxis)).
+// set dv to (visvisa(kerbin:radius + obt:apoapsis, kerbin:radius + tgtalt) - visvisa(kerbin:radius + obt:apoapsis, obt:semimajoraxis)).
+set dv to burndv(kerbin:radius + obt:apoapsis, obt:semimajoraxis, kerbin:radius + tgtalt).
 // set dv to (sqrt(kerbin:mu/(kerbin:radius + tgtalt)) - sqrt(kerbin:mu/obt:semimajoraxis)).
 set x to node(time:seconds + eta:apoapsis, 0, 0, dv).
 add x.
 
 // iteratively fix the node
 // "how many iterations could this possibly take?"
-lock diff to x:orbit:semimajoraxis - (kerbin:radius + tgtalt).
+lock diff to (x:orbit:semimajoraxis - (kerbin:radius + tgtalt)).
 until abs(diff) < 1 {
     set x:prograde to x:prograde + KD * diff.
     wait 0.01.
