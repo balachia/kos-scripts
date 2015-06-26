@@ -19,8 +19,8 @@ when stage:liquidfuel < 0.001 then {
 switch to 0.
 
 // header
-log "time,alt,speed,terminal,thrust,accel,gravity,pressure" to draglog.csv.
-lock outstr to time:seconds + "," + altitude + "," + ship:airspeed + "," + ship:termvelocity + "," + ship:maxthrust + "," + ship:sensors:acc:mag + "," + ship:sensors:grav:mag + "," + ship:sensors:pres.
+log "time,alt,speed,terminal,thrust,accel,gravity,atms" to draglog.csv.
+lock outstr to time:seconds + "," + altitude + "," + ship:airspeed + "," + ship:termvelocity + "," + ship:maxthrust + "," + ship:sensors:acc:mag + "," + ship:sensors:grav:mag + "," + (ship:sensors:pres / kerbin:atm:sealevelpressure).
 until altitude > 75000 {
     log outstr to draglog.csv.
 }.
