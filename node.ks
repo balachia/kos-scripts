@@ -1,16 +1,20 @@
-set nd to nextnode().
+run funcs.
+
+set nd to nextnode.
 
 //print out node's basic parameters - ETA and deltaV
 print "Node in: " + round(nd:eta) + ", DeltaV: " + round(nd:deltav:mag).
 
 //calculate ship's max acceleration
-set max_acc to ship:maxthrust/ship:mass.
+// set max_acc to ship:maxthrust/ship:mass.
+set max_acc to stagethrust()/ship:mass.
+// some kind of double engine bug?
 
 //now we just need to divide deltav:mag by our ship's max acceleration
 set burn_duration to nd:deltav:mag/max_acc.
 print "Estimated burn duration: " + round(burn_duration) + "s".
 
-wait until node:eta <= (burn_duration/2 + 60).
+wait until nd:eta <= (burn_duration/2 + 60).
 
 set np to lookdirup(nd:deltav, ship:facing:topvector). //points to node, keeping roll the same.
 lock steering to np.
@@ -19,7 +23,7 @@ lock steering to np.
 wait until abs(np:pitch - facing:pitch) < 0.15 and abs(np:yaw - facing:yaw) < 0.15.
 
 //the ship is facing the right direction, let's wait for our burn time
-wait until node:eta <= (burn_duration/2).
+wait until nd:eta <= (burn_duration/2).
 
 //we only need to lock throttle once to a certain variable in the beginning of the loop, and adjust only the variable itself inside it
 set tset to 0.
@@ -31,11 +35,12 @@ set dv0 to nd:deltav.
 until done
 {
     //recalculate current max_acceleration, as it changes while we burn through fuel
-    set max_acc to ship:maxthrust/ship:mass.
+    // set max_acc to ship:maxthrust/ship:mass.
+    set max_acc to stagethrust()/ship:mass.
 
     //throttle is 100% until there is less than 1 second of time left to burn
     //when there is less than 1 second - decrease the throttle linearly
-    set tset to min(nd:deltav:mag/maxa_acc, 1).
+    set tset to min(nd:deltav:mag/max_acc, 1).
 
     //here's the tricky part, we need to cut the throttle as soon as our nd:deltav and initial deltav start facing opposite directions
     //this check is done via checking the dot product of those 2 vectors
