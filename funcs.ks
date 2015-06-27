@@ -43,5 +43,3 @@ function range {
 
     return l.
 }.
-
-print "loaded functions".

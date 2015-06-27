@@ -2,6 +2,8 @@
 // parameters
 parameter tgtalt.       // target altitude
 
+run funcs.
+
 // gravity turn stuff
 global GT0 is 1000.
 global GT1 is 50000.
@@ -13,17 +15,11 @@ global LWAIT is 0.25.
 // start script
 clearscreen. 
 
-print " ".
-print " ".
-print " ".
-print " ".
-print " ".
-print " ".
-print " ".
-print " ".
+for i in range(0,8) {
+    print " ".
+}.
 
 print "Script start at: " + time:calendar + " " + time:clock.
-run funcs.
 sas on.
 set sasmode to "stabilityassist".
 set th to 1.
