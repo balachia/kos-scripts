@@ -5,28 +5,44 @@ parameter tgtalt.       // target altitude
 // gravity turn stuff
 global GT0 is 1000.
 global GT1 is 50000.
-global TH1 is 90.
-global ATMBUFFER is 500.
+global TH1 is -90.
+global ATMBUFFER is 0.
 global KD is -0.1.              // circularization node adjustment coefficient
+global LWAIT is 0.25.
 
 // start script
 clearscreen. 
+
+print " ".
+print " ".
+print " ".
+print " ".
+print " ".
+print " ".
+print " ".
+print " ".
+
 print "Script start at: " + time:calendar + " " + time:clock.
+run funcs.
 sas on.
 set sasmode to "stabilityassist".
 set th to 1.
 lock throttle to th. 
-// why rotate to -180?
+// why rotate to -180? because that's how it starts, dummy
 // lock steering to up + R(0, 0, -180).
 global theta is 0.
-lock steering to up + R (0, theta, 0).
+lock steering to up + R (0, theta, -180).
 print "T-1  All systems GO. Ignition!". 
 wait 1. 
 
 // event handler for staging
+global laststage is -1.
 when stage:liquidfuel < 0.001 then { 
-    print "No liquidfuel. Attempting to stage.".
-    stage. 
+    if missiontime - laststage > 0.5 {
+        print "T+" + round(missiontime) + " No liquidfuel. Attempting to stage.".
+        stage.
+        set laststage to missiontime.
+    }.
     preserve.
 }
 
@@ -53,13 +69,13 @@ until apoapsis > (tgtalt + ATMBUFFER) {
         // set theta to TH1 * ( pda - 1 ).
         set theta to TH1 * pda.
         // lock steering to up + R(0, theta, -180).
-        lock steering to up + R(0, theta, 0).
-        print "theta: " + theta at (0,24).
-        print "alt: " + ar at (0,25).
+        lock steering to up + R(0, theta, -180).
+        print "theta: " + theta at (0,5).
+        print "alt: " + ar at (0,6).
     }
     if ar > GT1 {
         // lock steering to up + R(0, theta, -180).
-        lock steering to up + R(0, theta, 0).
+        lock steering to up + R(0, theta, -180).
     }
 
     // control speed
@@ -70,11 +86,13 @@ until apoapsis > (tgtalt + ATMBUFFER) {
 //     if vsm < vl { set th to 1. }
 //     if vsm > vl and vsm < vh { set th to (vh-vsm)/(vh-vl). }
 //     if vsm > vh { set th to 0. }
-    print "alt:radar: " + ar at (0,27).
-    print "velocity:surface: " + vsm at (0,28).
-    print "target velocity: " + vt at (0,29).
-    print "throttle: " + th at (0,30).
-    wait 1.
+    print "target altitude: " + tgtalt at (0,0).
+    print "alt:radar: " + ar at (0,1).
+    print "velocity:surface: " + vsm at (0,2).
+    print "target velocity: " + vt at (0,3).
+    print "throttle: " + th at (0,4).
+    print "==============================" at (0,7).
+    wait LWAIT.
 }.
 set th to 0.
 print "T+" + round(missiontime) + " Fuel after atmosphere burn: " + stage:liquidfuel.
