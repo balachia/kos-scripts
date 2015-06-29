@@ -2,6 +2,7 @@ parameter tgtalt.       // target altitude
 
 clearscreen. 
 print "Script start at: " + time:calendar + " " + time:clock.
+run funcs.
 sas on.
 set sasmode to "stabilityassist".
 
