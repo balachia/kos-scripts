@@ -8,9 +8,9 @@ run funcs.
 global GT0 is 1000.
 global GT1 is 50000.
 global TH1 is -90.
-global ATMBUFFER is 0.
+global ATMBUFFER is 250.
 global KD is -0.1.              // circularization node adjustment coefficient
-global LWAIT is 0.25.
+global LWAIT is 0.1.
 
 // start script
 clearscreen. 
@@ -96,8 +96,8 @@ print "T+" + round(missiontime) + " Coasting to apoapsis in " + eta:apoapsis.
 
 unlock steering.
 unlock throttle.
-wait 1.
 set ship:control:pilotmainthrottle to 0.
+wait 1.
 
 
 
@@ -123,5 +123,3 @@ until abs(diff) < 1 {
 run node.
 
 lights on.
-
-
