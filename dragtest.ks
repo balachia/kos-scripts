@@ -2,7 +2,7 @@ parameter tgtspeed.
 
 clearscreen.
 
-run funcs.
+run ksplib.
 
 global Ku is 0.06.
 global Tu is 2*1.1.
