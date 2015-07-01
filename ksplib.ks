@@ -5,6 +5,7 @@
 // make function at runtime
 function makef {
     parameter body.
+    log "" to temp.ks. delete temp.ks.
     log body to temp.ks.
     run temp.ks.
 }.
