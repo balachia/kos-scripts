@@ -9,6 +9,7 @@ function nmoptim {
     for x in xs {
         ys:add(f(x)).
     }.
+    local imax is ys:length-1.
     // 1 order
     set ord to sort(ys).
     set xs to order(xs,ord).
@@ -17,17 +18,17 @@ function nmoptim {
     // not sure if this is the best criterion
     local continue is false.
     local count is 0.
-    until ys[ys:length-1] - ys[0] < 1e-5 {
-        print "NM " + count + " (" + ys[0] + ", " + ys[ys:length-1] ")".
+    until ys[imax] - ys[0] < 1e-5 {
+        print "NM " + count + " (" + ys[0] + ", " + ys[imax] ")".
         set continue to false.
 
         // 2 centroid
         set xo to centroid(xs).
 
         // 3 reflect (go to 1 if not best)
-        set xr to transform(xs[xs:length-1],xo,1).
+        set xr to transform(xs[imax],xo,1).
         set yr to f(xr).
-        if yr >= ys[0] and yr < ys[ys:length - 2] {
+        if yr >= ys[0] and yr < ys[imax - 1] {
             set ys[ys:length-1] to yr.
             set xs[xs:length-1] to xr.
         } else {
@@ -37,14 +38,14 @@ function nmoptim {
         // 4 expand (go to 1 or 5)
         if continue {
             if yr < ys[0] {
-                set xe to transform(xs[xs:length-1],xo,2).
+                set xe to transform(xs[imax],xo,2).
                 set ye to f(xe).
                 if ye < yr {
-                    set ys[ys:length-1] to ye.
-                    set xs[xs:length-1] to xe.
+                    set ys[imax] to ye.
+                    set xs[imax] to xe.
                 } else {
-                    set ys[ys:length-1] to yr.
-                    set xs[xs:length-1] to xr.
+                    set ys[imax] to yr.
+                    set xs[imax] to xr.
                 }
                 set continue to false.
             }.
@@ -52,11 +53,11 @@ function nmoptim {
 
         // 5 contract (go to 6 or 5)
         if continue {
-            set xc to transform(xs[xs:length-1],xo,-0.5).
+            set xc to transform(xs[imax],xo,-0.5).
             set yc to f(xc).
-            if yc < ys[ys:length-1] {
-                set ys[ys:length-1] to yc.
-                set xs[xs:length-1] to xc.
+            if yc < ys[imax] {
+                set ys[imax] to yc.
+                set xs[imax] to xc.
                 set continue to false.
             }
         }
