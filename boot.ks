@@ -1,7 +1,8 @@
 clearscreen.
 
-copy funcs from 0.
-copy orbit from 0.
-copy node from 0.
-// copy reorbit from 0.
+copy ksplib.ks from 0.
+copy orbit.ks from 0.
+copy node.ks from 0.
+copy reorbit.ks from 0.
+copy warp.ks from 0.
 
