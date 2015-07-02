@@ -1,14 +1,26 @@
+run lib_exec2.
+
 // let's try to implement nelder-mead?
 // assuming minimizing a function f that takes a list of arguments and returns the objective
 function nmoptim {
+    parameter fstr.
     parameter finit.
+
+    lock f to 0.
+    execute(fstr).
+
     local ys is list().
     local ord is list().
-    local xs is list().
+    local xs is finit.
     // initial points
     for x in xs {
-        ys:add(f(x)).
+        print x.
+        // ys:add(f(x)).
+        set l to x.
+        ys:add(f).
     }.
+    local feval is ys:length.
+    print ys.
     local imax is ys:length-1.
     // 1 order
     set ord to sort(ys).
@@ -18,8 +30,8 @@ function nmoptim {
     // not sure if this is the best criterion
     local continue is false.
     local count is 0.
-    until ys[imax] - ys[0] < 1e-5 {
-        print "NM " + count + " (" + ys[0] + ", " + ys[imax] ")".
+    until (ys[imax] - ys[0] < 0.000001) {
+        print "NM " + count + " (" + ys[0] + ", " + ys[imax] + ")".
         set continue to false.
 
         // 2 centroid
@@ -27,7 +39,10 @@ function nmoptim {
 
         // 3 reflect (go to 1 if not best)
         set xr to transform(xs[imax],xo,1).
-        set yr to f(xr).
+        //set yr to f(xr).
+        set l to xr.
+        set yr to f.
+        set feval to feval + 1.
         if yr >= ys[0] and yr < ys[imax - 1] {
             set ys[ys:length-1] to yr.
             set xs[xs:length-1] to xr.
@@ -39,7 +54,10 @@ function nmoptim {
         if continue {
             if yr < ys[0] {
                 set xe to transform(xs[imax],xo,2).
-                set ye to f(xe).
+                // set ye to f(xe).
+                set l to xe.
+                set ye to f.
+                set feval to feval + 1.
                 if ye < yr {
                     set ys[imax] to ye.
                     set xs[imax] to xe.
@@ -54,7 +72,10 @@ function nmoptim {
         // 5 contract (go to 6 or 5)
         if continue {
             set xc to transform(xs[imax],xo,-0.5).
-            set yc to f(xc).
+            // set yc to f(xc).
+            set l to xc.
+            set yc to f.
+            set feval to feval + 1.
             if yc < ys[imax] {
                 set ys[imax] to yc.
                 set xs[imax] to xc.
@@ -67,7 +88,10 @@ function nmoptim {
             local i is 1.
             until i = xs:length {
                 set xs[i] to transform(xs[i],xs[0],0.5).
-                set ys[i] to f(xs[i]).
+                // set ys[i] to f(xs[i]).
+                set l to xs[i].
+                set ys[i] to f.
+                set feval to feval + 1.
                 set i to i+1.
             }
         }
@@ -78,10 +102,12 @@ function nmoptim {
         set ys to order(ys,ord).
         set count to count + 1.
     }.
+    print "f evaluations: " + feval.
     return xs[0].
 }
 
 function nmoptim0 {
+    parameter fstr.
     parameter x0.
     local finit is list(x0).
     local i is 0.
@@ -91,7 +117,7 @@ function nmoptim0 {
         finit:add(fi).
         set i to i+1.
     }
-    return nmoptim(finit).
+    return nmoptim(fstr,finit).
 }
 
 function centroid {
@@ -132,18 +158,20 @@ function transform {
 // insertion sort, returns order
 function sort {
     parameter l.
-    local order is list(0).
+    local ord is list(0).
     local i is 1.
     until i = l:length {
+        ord:add(0).
         local x is l[i].
         local j is i.
         until j = 0 or l[j-1] <= x {
-            set order[j] to j-1.
+            set ord[j] to ord[j-1].
             set j to j-1.
         }.
-        set order[j] to i.
+        set ord[j] to i.
+        set i to i+1.
     }.
-    return order.
+    return ord.
 }
 
 function order {
