@@ -47,20 +47,9 @@ function burndv {
     return (visvisa(rad,sma1) - visvisa(rad,sma0)).
 }.
 
-// change apo from peri
-function reapo {
-    parameter ta.
-    local dv is burndv(body:radius + obt:periapsis, obt:semimajoraxis, 0.5*(2*body:radius + ta + obt:periapsis)).
-    local x is node(time:seconds + eta:periapsis, 0, 0, dv).
-    add x.
-}.
-
-// change peri from apo
-function reperi {
-    parameter ta.
-    local dv is burndv(body:radius + obt:apoapsis, obt:semimajoraxis, body:radius + ta).
-    local x is node(time:seconds + eta:apoapsis, 0, 0, dv).
-    add x.
+function invperiod {
+    parameter p.
+    return (body:mu*(p/(2*constant():pi))^2)^(1/3).
 }.
 
 // part fixes

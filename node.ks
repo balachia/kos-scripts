@@ -57,4 +57,5 @@ wait 1.
 
 //we no longer need the maneuver node
 remove nd.
+sas on.
 set ship:control:pilotmainthrottle to 0.

@@ -115,11 +115,9 @@ wait 1.
 
 // make a circularization node once we've passed atmosphere
 wait until altitude > kerbin:atm:height.
-reperi(tgtalt).
-// set dv to burndv(kerbin:radius + obt:apoapsis, obt:semimajoraxis, kerbin:radius + tgtalt).
-// set x to node(time:seconds + eta:apoapsis, 0, 0, dv).
-// add x.
+run reperi(tgtalt).
 
+ag0 on.
 rtantennae().
 
 run node.

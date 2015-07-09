@@ -4,14 +4,15 @@ run lib_exec2.
 // assuming minimizing a function f that takes a list of arguments and returns the objective
 function nmoptim {
     parameter fstr.
-    parameter finit.
+    parameter f0.
 
     lock f to 0.
     execute(fstr).
 
+    local maxiter is 300.
     local ys is list().
     local ord is list().
-    local xs is finit.
+    local xs is f0.
     // initial points
     for x in xs {
         print x.
@@ -29,9 +30,10 @@ function nmoptim {
 
     // not sure if this is the best criterion
     local continue is false.
-    local count is 0.
-    until (ys[imax] - ys[0] < 0.000001) {
-        print "NM " + count + " (" + ys[0] + ", " + ys[imax] + ")".
+    local iter is 0.
+    local done is false.
+    until done {
+        print "NM " + iter + " (min " + ys[0] + ", max " + ys[imax] + ")".
         set continue to false.
 
         // 2 centroid
@@ -100,24 +102,28 @@ function nmoptim {
         set ord to sort(ys).
         set xs to order(xs,ord).
         set ys to order(ys,ord).
-        set count to count + 1.
+        set iter to iter + 1.
+        set done to (iter > maxiter) or (ys[imax] - ys[0] < 0.000001).
     }.
     print "f evaluations: " + feval.
+    if (iter > maxiter) {
+        print "hit max iterations, probably did not converge".
+    }.
     return xs[0].
 }
 
 function nmoptim0 {
     parameter fstr.
     parameter x0.
-    local finit is list(x0).
+    local f0 is list(x0).
     local i is 0.
     until i = x0:length {
         local fi is x0:copy.
         set fi[i] to fi[i] + 1.
-        finit:add(fi).
+        f0:add(fi).
         set i to i+1.
     }
-    return nmoptim(fstr,finit).
+    return nmoptim(fstr,f0).
 }
 
 function centroid {
