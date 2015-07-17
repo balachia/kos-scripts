@@ -1,17 +1,15 @@
-// much adapted from http://ksp.baldev.de/kos/far2/far2.txt
-// parameters
-parameter tgtalt.       // target altitude
-run ksplib.
+parameter ta.
+run genlib.
+run orblib.
 
 // defaults
-if tgtalt = 0 {set tgtalt to 100000.}.
+if ta = 0 {set ta to 1e5.}.
 
 // gravity turn
 global GT0 is 1000.
 global GT1 is 50000.
 global TH1 is -90.
 global ATMBUFFER is 250.
-global LWAIT is 0.1.
 
 // velocity PID
 global Ku is 0.06.
@@ -20,11 +18,10 @@ global kp is 0.8*ku.
 global ki is 0.
 global kd is (kp*tu)/8.
 
-// target airspeed fcn
+// target airspeed fcn: exp(be0+be1*alt)
 global be0 is 5.2.
 global be1 is 8.2e-5.
 
-// start
 clearscreen. 
 // reserve lines
 for i in range(0,8) {
@@ -62,9 +59,8 @@ when alt:radar > GT0 then {
 }
 
 // atmosphere burn
-// control speed and attitude
 wait until missiontime > t0.
-until apoapsis > (tgtalt + ATMBUFFER) {
+until apoapsis > (ta + ATMBUFFER) {
     set ar to alt:radar.
     // control attitude
     // consider different functional turns here
@@ -96,13 +92,13 @@ until apoapsis > (tgtalt + ATMBUFFER) {
     set t0 to missiontime.
     set p0 to p.
 
-    print "target altitude: " + tgtalt at (0,0).
+    print "target altitude: " + ta at (0,0).
     print "alt:radar: " + round(ar,4) at (0,1).
     print "velocity:surface: " + round(ship:airspeed,4) at (0,2).
     print "target velocity: " + round(vt,4) at (0,3).
     print "throttle: " + round(th,4) + " (" + round(dth,4) + ")          " at (0,4).
     print "==============================" at (0,7).
-    wait LWAIT.
+    wait 0.1.
 }.
 set th to 0.
 trace("Fuel after atmosphere burn: " + stage:liquidfuel).
@@ -115,11 +111,11 @@ wait 1.
 
 // make a circularization node once we've passed atmosphere
 wait until altitude > kerbin:atm:height.
-run reperi(tgtalt).
+run reperi(ta).
 
 ag0 on.
-rtantennae().
+//rtantennae().
 
 run node.
 
-lights on.
+//lights on.

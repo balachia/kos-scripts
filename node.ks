@@ -1,4 +1,5 @@
-run ksplib.
+run genlib.
+run ksplib.ks.
 set nd to nextnode.
 
 trace("Node in: " + round(nd:eta) + ", DeltaV: " + round(nd:deltav:mag)).
@@ -8,9 +9,6 @@ trace("Node in: " + round(nd:eta) + ", DeltaV: " + round(nd:deltav:mag)).
 set max_acc to stagethrust()/ship:mass.
 set burn_duration to nd:deltav:mag/max_acc.
 trace("Estimated burn duration: " + round(burn_duration) + "s (thr " + round(stagethrust(),2) + ")").
-
-// warp?
-// wait until nd:eta <= (burn_duration/2 + 60).
 
 sas off.
 rcs on.

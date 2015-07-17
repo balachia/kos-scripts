@@ -1,4 +1,5 @@
 parameter dt.
+run genlib.ks.
 // warp (0:1) (1:5) (2:10) (3:50) (4:100) (5:1000)
 set dt to round(dt).
 set t0 to round(time:seconds).
